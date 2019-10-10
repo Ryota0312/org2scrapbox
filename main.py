@@ -75,7 +75,7 @@ class Converter:
                 try:
                     title = m.group(2)[1:]
                 except:
-                    title = "NONE"
+                    title = "sh"
                 convl = "[" + size + " " + title + "]"
             # 箇条書きなら
             elif l.replace(" ", "").startswith("+"):
