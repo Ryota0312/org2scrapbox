@@ -136,13 +136,13 @@ class Converter:
         return "\n".join(result)
 
     def __cont_str(self, t, content):
-        content = re.match("(\ |\t)+(.*)", content).group(2)
+        content = re.match("(\ |\t)*(.*)", content).group(2)
         if t == "TITLE":
             return content
         elif t == "AUTHOR":
-            return "\t" + content
+            return "\t作成者:" + content
         elif t == "DATE":
-            return "\t" + content
+            return "\t作成日:" + content
         else:
             return ""
     
