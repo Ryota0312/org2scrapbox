@@ -146,8 +146,6 @@ class Converter:
 if __name__ == "__main__":
     text = Text(sys.argv[1])
     text.parse()
-
-    print(text.groups)
     
     converted = Converter("Scrapbox", text).convert()
     for l in converted:
