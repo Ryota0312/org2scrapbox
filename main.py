@@ -32,7 +32,6 @@ class Text:
             # 空行で分割
             if line == "" or line == "\n":
                 self.groups.append(Group(lines))
-                print(self.groups)
                 lines = []
             # コード記法部分を分割(開始)
             elif (code_flag == 0 and "```" in line) or "#+BEGIN_SRC" in line:
