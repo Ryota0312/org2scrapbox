@@ -30,9 +30,10 @@ class Text:
         for line in self.f:            
             ### キーとなる文字列でグループ化
             # 空行で分割
-            if line == "":
+            if line == "" or line == "\n":
                 self.groups.append(Group(lines))
-                line = []
+                print(self.groups)
+                lines = []
             # コード記法部分を分割(開始)
             elif (code_flag == 0 and "```" in line) or "#+BEGIN_SRC" in line:
                 code_flag = 1
@@ -47,6 +48,7 @@ class Text:
             # 何もなければ追加のみ
             else:
                 lines.append(line[:-1])
+        if lines != []: self.groups.append(Group(lines))
 
 class Converter:
     def __init__(self, mode, text):
@@ -145,6 +147,8 @@ if __name__ == "__main__":
     text = Text(sys.argv[1])
     text.parse()
 
+    print(text.groups)
+    
     converted = Converter("Scrapbox", text).convert()
     for l in converted:
         print(l)
