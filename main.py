@@ -7,6 +7,7 @@ class Group:
         self.gtype = self.__get_group()
 
     def __get_group(self):
+        if len(self.line) == 0: return "NONE"
         if "```" in self.line[0] or "#+BEGIN_SRC" in self.line[0]:
             return "CODE"
         else:
@@ -81,19 +82,20 @@ class Converter:
             elif l.replace(" ", "").startswith("+"):
                 ## FIXME: 空白とタブの数で制御したい
                 #space_len = 0
-                #m = re.match("(\ |\t)*\+\ (.*)", l)
+                #m = re.match("(\ |\t)*\+\ (.*)", l.replace("\t"," "))
                 #if m.group(1) == None:
                 #    space_len = 0
                 #else:
                 #    space_len = len(m.group(1))
-                #if space_len < prev_space:
+                #if space_len > prev_space:
                 #    indent += 1
+                #    prev_space = space_len
                 #elif space_len == prev_space:
-                #    pass
+                #    prev_space = space_len                                    
                 #else:
                 #    indent = 0
                 #    prev_space = -1
-                #convl = "\t" * indent + m.group(2)
+                #convl = str(space_len) + "\t" * indent + m.group(2)
                 convl = l.replace("+ ", " ")
             # 制御文字 #+XXX: なら
             elif re.search("#\+.*:.*", l):
@@ -105,7 +107,7 @@ class Converter:
                 else:
                     convl = self.__cont_str(t, content)
             else:
-                convl = l
+                convl = re.match("(\ |\t)*(.*)", l).group(2)
             # リンクを処理
             m = re.search(".*(\[\[(.*)\]\[(.*)\]\]).*", convl)
             if m:
