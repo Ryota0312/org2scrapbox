@@ -64,6 +64,8 @@ class Converter:
 
     def __text_convert(self, group):
         result = []
+        indent = 0 # 箇条書き用
+        prev_space = -1 # 箇条書き用
         for l in group.line:
             # 見出しなら
             if l.startswith("*"):
@@ -76,7 +78,31 @@ class Converter:
                 convl = "[" + size + " " + title + "]"
             # 箇条書きなら
             elif l.replace(" ", "").startswith("+"):
-                convl = l.replace("+ ", "")
+                ## FIXME: 空白とタブの数で制御したい
+                #space_len = 0
+                #m = re.match("(\ |\t)*\+\ (.*)", l)
+                #if m.group(1) == None:
+                #    space_len = 0
+                #else:
+                #    space_len = len(m.group(1))
+                #if space_len < prev_space:
+                #    indent += 1
+                #elif space_len == prev_space:
+                #    pass
+                #else:
+                #    indent = 0
+                #    prev_space = -1
+                #convl = "\t" * indent + m.group(2)
+                convl = l.replace("+ ", " ")
+            # 制御文字 #+XXX: なら
+            elif re.search("#\+.*:.*", l):
+                m = re.search("#\+(.*):(.*)", l)
+                t = m.group(1)
+                content = m.group(2)
+                if content == "":
+                    continue
+                else:
+                    convl = self.__cont_str(t, content)
             else:
                 convl = l
             # リンクを処理
@@ -103,6 +129,17 @@ class Converter:
         for l in trimed:
             if l != "": result.append(l)
         return "\n".join(result)
+
+    def __cont_str(self, t, content):
+        content = re.match("(\ |\t)+(.*)", content).group(2)
+        if t == "TITLE":
+            return content
+        elif t == "AUTHOR":
+            return "\t" + content
+        elif t == "DATE":
+            return "\t" + content
+        else:
+            return ""
     
 if __name__ == "__main__":
     text = Text(sys.argv[1])
